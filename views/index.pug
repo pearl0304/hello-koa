@@ -7,6 +7,14 @@ html(lang="ko")
         link(href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet")
         title :: hello koa-pug
     body 
-    div.mx-4.my-4.bg-gray-200 hello koa - PUG
+        h1.bg-gradient-to-r.bg.from-purple-100.to-gray-200.p-16.text-4xl.font-bold Chat Project
+        div.p-16.space-y-8
+            div.bg-gray-100.p-2 Chatting List
+            form#form.space-y-4.flex
+                input.flex-1.border.border-gray-300.p-4.rounded(placeholder="Wrtie") 
+                button.m-4.bg-purple-100.p-2.rounded Send
+
+
+        script(src="/public/client.js")
     
     

@@ -12,7 +12,11 @@
   "license": "ISC",
   "dependencies": {
     "koa": "^2.13.4",
+    "koa-mount": "^4.0.0",
     "koa-pug": "^5.0.0",
+    "koa-route": "^3.2.0",
+    "koa-static": "^5.0.0",
+    "koa-websocket": "^6.0.0",
     "nodemon": "^2.0.14",
     "tailwindcss": "^2.2.19"
   },
