@@ -13,7 +13,10 @@
   "dependencies": {
     "koa": "^2.13.4",
     "koa-pug": "^5.0.0",
-    "nodemon": "^2.0.14"
+    "nodemon": "^2.0.14",
+    "tailwindcss": "^2.2.19"
   },
-  "type": "module"
+  "devDependencies": {
+    "@babel/core": "^7.16.0"
+  }
 }
