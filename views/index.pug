@@ -9,10 +9,10 @@ html(lang="ko")
     body 
         h1.bg-gradient-to-r.bg.from-purple-100.to-gray-200.p-16.text-4xl.font-bold Chat Project
         div.p-16.space-y-8
-            div.bg-gray-100.p-2 Chatting List
+            div#chats.bg-gray-100.p-2 Chatting List
             form#form.space-y-4.flex
-                input.flex-1.border.border-gray-300.p-4.rounded(placeholder="Wrtie") 
-                button.m-4.bg-purple-100.p-2.rounded Send
+                input#input.flex-1.border.border-gray-300.p-4.rounded(placeholder="Wrtie") 
+                button#send.m-4.bg-purple-100.p-2.rounded Send
 
 
         script(src="/public/client.js")
