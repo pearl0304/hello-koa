@@ -36,18 +36,34 @@
         
 
     })
-    // [Recive]
-    socket.addEventListener('message',(e)=>{
-        chats.push(JSON.parse(e.data))
 
+    const drawChats = ()=>{
         chatsEl.innerHTML=''
-
         chats.forEach(({message,nickname})=>{
             const div = document.createElement('div')
             div.innerText = `${nickname}:${message}`
-            chatsEl.appendChild(div)
-            
+            chatsEl.appendChild(div)  
         })
+    }
+
+    // [Recive]
+    socket.addEventListener('message',(e)=>{
+        const {type, payload} = JSON.parse(e.data)
+
+        if(type ==='sync'){
+            const {chats : syncedChats} =payload
+            chats.push(...syncedChats)
+            
+        }else if (type ==='chat'){
+            const chat = payload
+            chats.push(chat)
+        }
+
+     
+        drawChats()
+        
+
+
 
 
 

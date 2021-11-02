@@ -5,6 +5,8 @@ const serve = require('koa-static')
 const mount = require('koa-mount')
 const Pug = require("koa-pug")
 const path = require("path")
+const mongoClient = require("./mongoDB/mongo");
+const client = require("./mongoDB/mongo");
 
 
 
@@ -23,32 +25,60 @@ app.use(async ctx => {
     await ctx.render('index')
   });
 
-  // Using routes
-  app.ws.use(route.all('/ws',(ctx)=> {
-    // `ctx` is the regular koa context created from the `ws` onConnection `socket.upgradeReq` object.
-    // the websocket is added to the context on `ctx.websocket`.
-    ctx.websocket.send('Hello World');
 
-    // [Recive] The message from user
-    ctx.websocket.on('message', (data)=> {
-      if(typeof data !== 'string') return 
-      
-      const {message,nickname} = JSON.parse(data)
+// mongoDB
+const _client = mongoClient.connect()
 
-      const {server} = app.ws
-      if(!server) return
+async function getChatsCollection(){
+  const client = await _client
+  return client.db('test').collection('chats')
+}
+
+// Using routes
+app.ws.use(route.all('/ws',async (ctx)=> {
+
+  // Rendering exited chat message
+  const chatsCollection = await getChatsCollection()
+  const chatsCursor = chatsCollection.find({},{sort:{createdAt:1}})
+
+  const chats = await chatsCursor.toArray()
+  ctx.websocket.send(JSON.stringify({
+    type : 'sync',
+    payload : {chats}
+  }))
+
+  // [Recive] The message from user
+  ctx.websocket.on('message', async(data)=> {
+    if(typeof data !== 'string') return 
+
+    const chat = JSON.parse(data) 
+
+    await chatsCollection.insertOne({
+      ...chat,
+      createdAt: new Date()
+    })
+
+    const {message,nickname} = chat
+
+    const {server} = app.ws
+    if(!server) return
 
 
-      // [Send] the useres' message from server to ALL client
-      server.clients.forEach(client =>{
-        client.send(JSON.stringify({
-          message,nickname
-        }))
-      })
-    });
+    // [Send] the useres' message from server to ALL client
+    server.clients.forEach(client =>{
+      client.send(JSON.stringify({
+        type : 'chat',
+        payload : {
+          message,
+          nickname
+        }
+     
+      }))
+    })
+  });
 
 
-  }));  
+}));  
 
 
 app.listen(PORT,()=>{
